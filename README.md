@@ -6,7 +6,7 @@ This image contains a ready-to-go installation of [LIS](https://github.com/legum
 
 The docker image is automatically built on quay.io
 
-[![Docker Repository on Quay](https://quay.io/repository/abretaud/lis-gcv/status "Docker Repository on Quay")](https://quay.io/repository/abretaud/apollo-report)
+[![Docker Repository on Quay](https://quay.io/repository/abretaud/lis-gcv/status "Docker Repository on Quay")](https://quay.io/repository/abretaud/lis-gcv)
 
 ```bash
 docker pull quay.io/abretaud/lis-gcv
