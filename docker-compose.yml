@@ -1,0 +1,33 @@
+# This is an example of docker-compose.yml file allowing to run a Chado DB container, a Tripal instance, and the Genome Context Viewer application
+version: '2'
+services:
+
+    gcv:
+      image: gcv
+      links:
+        - db:postgres
+      ports:
+        - "8100:80"
+        - "8000:8000"
+
+    tripal:
+      image: erasche/tripal:latest
+      links:
+        - db:postgres
+      volumes:
+        - /var/www/html/sites
+        - /var/www/private
+      environment:
+        UPLOAD_LIMIT: 20M
+        MEMORY_LIMIT: 512M
+      ports:
+        - "8200:80"
+
+    db:
+      image: erasche/chado:1.31-jenkins110.1-pg9.5
+      environment:
+        - POSTGRES_PASSWORD=postgres
+        - INSTALL_CHADO_SCHEMA=0
+        - INSTALL_YEAST_DATA=0
+      volumes:
+        - /var/lib/postgresql/data/
