@@ -36,7 +36,6 @@ RUN cd /opt/gcv/client && \
     npm install && \
     npm run build && \
     rm -rf /usr/share/nginx/html && \
-    cp config.json dist/ && \
     ln -s /opt/gcv/client/dist/ /usr/share/nginx/html
 
 WORKDIR /opt/gcv

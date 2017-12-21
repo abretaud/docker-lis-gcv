@@ -12,11 +12,13 @@ The docker image is automatically built on quay.io
 docker pull quay.io/abretaud/lis-gcv
 ```
 
+An example of [docker-compose.yml](./docker-compose.yml) file is available to help you setup a Chado database and a Tripal website.
+
 ## Configuration
 
 This image exposes two ports:
 
-- 8000 = a Django appplication exposing webservices
+- 80 = a Django appplication exposing webservices
 - 8100 = a Nginx server serving static content
 
 ## Contributing
