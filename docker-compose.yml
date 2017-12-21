@@ -3,7 +3,7 @@ version: '2'
 services:
 
     gcv:
-      image: gcv
+      image: quay.io/abretaud/lis-gcv
       links:
         - db:postgres
       ports:

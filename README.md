@@ -2,6 +2,16 @@
 
 This image contains a ready-to-go installation of [LIS](https://github.com/legumeinfo/) [Genomic Context Viewer](https://github.com/legumeinfo/lis_context_viewer).
 
+## Usage
+
+The docker image is automatically built on quay.io
+
+[![Docker Repository on Quay](https://quay.io/repository/abretaud/lis-gcv/status "Docker Repository on Quay")](https://quay.io/repository/abretaud/apollo-report)
+
+```bash
+docker pull quay.io/abretaud/lis-gcv
+```
+
 ## Configuration
 
 This image exposes two ports:
