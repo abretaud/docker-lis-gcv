@@ -57,10 +57,18 @@ then
     echo "CREATE DATABASE $DB_NAME;" | psql -U $DB_USER -h $DB_HOST -p $DB_PORT postgres;
 fi
 
-# Check if tables are there
-DB_LOADED=$(PGPASSWORD=$DB_PASS psql -U "$DB_USER" -h "$DB_HOST" -p "$DB_PORT" -tAc "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'organism');")
-if [[ $DB_LOADED != "t" ]]
-then
+# Check if tables are there, wait a little in case chado is being loaded
+for ((i=0;i<40;i++))
+do
+    DB_LOADED=$(PGPASSWORD=$DB_PASS psql -U "$DB_USER" -h "$DB_HOST" -p "$DB_PORT" -tAc "SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'organism');")
+    if [[ $DB_LOADED == "t" ]]
+    then
+		break
+    fi
+    sleep 3
+done
+
+if ! [[ $DB_LOADED == "t" ]]; then
 	echo "=> Error: could not find chado tables. Something is wrong in the install. Exiting."
     exit 1
 fi
