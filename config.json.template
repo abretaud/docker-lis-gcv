@@ -1,0 +1,46 @@
+{"servers": [
+  {
+    "id": "${SITE_NAME}",
+    "name": "${SITE_FULL_NAME}",
+    "macroColors": {
+      "scriptUrl": "https://cdn.rawgit.com/legumeinfo/lis-taxon-symbology/01e02d99/dist/bundle.js",
+      "functionName": "taxonChroma.get"
+    },
+    "microMulti": {
+      "type": "POST",
+      "url": "${SERVICES_URL}/v1/micro-synteny-basic/"
+    },
+    "microSearch": {
+      "type": "POST",
+      "url": "${SERVICES_URL}/v1/micro-synteny-search/"
+    },
+    "microQuery": {
+      "type": "POST",
+      "url": "${SERVICES_URL}/v1/gene-to-query-track/"
+    },
+    "macro": {
+      "type": "POST",
+      "url": "${SERVICES_URL}/v1_1/macro-synteny/"
+    },
+    "geneLinks": {
+      "type": "GET",
+      "url": "${TRIPAL_URL}/gene_links/"
+    },
+    "familyTreeLink": {
+      "type": "GET",
+      "url": "${TRIPAL_URL}/chado_phylotree/"
+    },
+    "plotGlobal": {
+      "type": "POST",
+      "url": "${SERVICES_URL}/v1/global-plots/"
+    },
+    "nearestGene": {
+      "type": "POST",
+      "url": "${SERVICES_URL}/v1/nearest-gene/"
+    },
+    "chromosome": {
+      "type": "POST",
+      "url": "${SERVICES_URL}/v1_1/chromosome/"
+    }
+  }
+]}

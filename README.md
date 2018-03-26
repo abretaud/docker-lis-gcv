@@ -21,6 +21,18 @@ This image exposes two ports:
 - 80 = a Django appplication exposing webservices
 - 8100 = a Nginx server serving static content
 
+The following environment variables are available:
+
+|Variable|Description|Default value|
+|---|---|---|
+|SITE_NAME|Site name (short, no spaces)|lis|
+|SITE_FULL_NAME|Full site name|Legume Information System|
+|GCV_URL|External URL to access GCV|http://localhost:8000|
+|SERVICES_URL|External URL to access GCV API|http://localhost:8000/services|
+|TRIPAL_URL|Address of a Tripal instance installed with tripal_phylotree module and a tripal_linkout module|https://legumeinfo.org|
+|DEBUG|Set to 'true' to activate the debug mode|false|
+|HOST|Hostname|gcv|
+
 ## Contributing
 
 Please submit all issues and pull requests to the [abretaud/docker-tripal](http://github.com/abretaud/docker-lis-gcv) repository.

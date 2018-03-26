@@ -26,14 +26,34 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
 
 ENTRYPOINT ["/usr/local/bin/tini", "--"]
 
-RUN mkdir /opt/gcv && \
+ENV SITE_NAME="lis" \
+    SITE_FULL_NAME="Legume Information System" \
+    SERVICES_URL="http://localhost:8000/services" \
+    GCV_URL="http://localhost:8000" \
+    TRIPAL_URL="https://legumeinfo.org" \
+    DEBUG="false" \
+    HOST="gcv"
+
+RUN mkdir -p /opt/gcv && \
+    mkdir -p /etc/gcv && \
     cd /opt/gcv && \
     git clone https://github.com/legumeinfo/lis_context_viewer.git . && \
+    git checkout b195bf434fb9bc7f280c62c1dbd82642eca63448 && \
     cd server && \
     pip install -r requirements.txt
 
+ADD config.json.template /etc/gcv/config.json.template
+ADD settings.py /opt/gcv/server/server/settings.py
+ADD header.component.html /opt/gcv/client/src/app/components/shared/header.component.html
+ADD default-parameters.ts.template /etc/gcv/default-parameters.ts.template
+ADD instructions/instructions.component.html /etc/gcv/instructions/instructions.component.html
+ADD instructions/instructions.component.ts /opt/gcv/client/src/app/components/instructions/instructions.component.ts
+
 RUN cd /opt/gcv/client && \
     npm install && \
+    envsubst < /etc/gcv/config.json.template > src/config.json && \
+    envsubst < /etc/gcv/default-parameters.ts.template > /opt/gcv/client/src/app/constants/default-parameters.ts && \
+    envsubst < /etc/gcv/instructions/instructions.component.html > /opt/gcv/client/src/app/components/instructions/instructions.component.html && \
     npm run build && \
     rm -rf /usr/share/nginx/html && \
     ln -s /opt/gcv/client/dist/ /usr/share/nginx/html

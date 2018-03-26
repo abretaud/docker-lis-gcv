@@ -75,6 +75,13 @@ fi
 
 export SECRET_KEY=`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 64 | head -n 1`
 
+# Update the client in case the config changed
+cd /opt/gcv/client
+envsubst < /etc/gcv/config.json.template > src/config.json
+envsubst < /etc/gcv/default-parameters.ts.template > /opt/gcv/client/src/app/constants/default-parameters.ts
+cp src/config.json dist/config.json
+npm run build
+
 cd /opt/gcv/server/
 
 # Run nginx in background
