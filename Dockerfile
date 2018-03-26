@@ -34,11 +34,15 @@ ENV SITE_NAME="lis" \
     DEBUG="false" \
     HOST="gcv"
 
+# Patch needed for external links to tripal_phylotree
+ADD PR131.diff /opt/
+
 RUN mkdir -p /opt/gcv && \
     mkdir -p /etc/gcv && \
     cd /opt/gcv && \
     git clone https://github.com/legumeinfo/lis_context_viewer.git . && \
     git checkout b195bf434fb9bc7f280c62c1dbd82642eca63448 && \
+    patch -p1 < /opt/PR131.diff && \
     cd server && \
     pip install -r requirements.txt
 
