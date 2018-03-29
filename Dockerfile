@@ -2,7 +2,7 @@ FROM nginx
 MAINTAINER Anthony Bretaudeau <anthony.bretaudeau@inra.fr>
 ENV DEBIAN_FRONTEND noninteractive
 
-EXPOSE :8000
+EXPOSE 8000
 
 RUN mkdir -p /usr/share/man/man1 /usr/share/man/man7
 
