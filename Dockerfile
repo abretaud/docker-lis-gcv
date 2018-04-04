@@ -31,7 +31,7 @@ ENTRYPOINT ["/usr/local/bin/tini", "--"]
 ENV SITE_NAME="lis" \
     SITE_FULL_NAME="Legume Information System" \
     SERVICES_URL="http://localhost:8000/services" \
-    GCV_URL="http://localhost:8000" \
+    GCV_URL="http://localhost:8100" \
     TRIPAL_URL="https://legumeinfo.org" \
     DEBUG="false" \
     HOST="gcv"

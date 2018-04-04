@@ -18,8 +18,10 @@ An example of [docker-compose.yml](./docker-compose.yml) file is available to he
 
 This image exposes two ports:
 
-- 80 = a Django appplication exposing webservices
-- 8100 = a Nginx server serving static content
+- 8000 = a Django appplication exposing webservices
+- 80 = a Nginx server serving static content
+
+The [docker-compose.yml](./docker-compose.yml) file maps the port 8100 to the container port 80, which means you can access GCV by going to http://localhost:8100/
 
 The following environment variables are available:
 
@@ -27,7 +29,7 @@ The following environment variables are available:
 |---|---|---|
 |SITE_NAME|Site name (short, no spaces)|lis|
 |SITE_FULL_NAME|Full site name|Legume Information System|
-|GCV_URL|External URL to access GCV|http://localhost:8000|
+|GCV_URL|External URL to access GCV|http://localhost:8100|
 |SERVICES_URL|External URL to access GCV API|http://localhost:8000/services|
 |TRIPAL_URL|Address of a Tripal instance installed with tripal_phylotree module and a tripal_linkout module|https://legumeinfo.org|
 |DEBUG|Set to 'true' to activate the debug mode|false|
