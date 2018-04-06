@@ -84,6 +84,12 @@ npm run build
 
 cd /opt/gcv/server/
 
+cp /etc/gcv/original_views.py services/views.py
+if [ "$USE_GENE_UNAME" == "true" ]
+then
+    patch -p1 < /opt/gene_uname.diff
+fi
+
 # Run nginx in background
 nginx -g "daemon on;"
 

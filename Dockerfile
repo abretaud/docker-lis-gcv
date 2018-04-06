@@ -34,10 +34,12 @@ ENV SITE_NAME="lis" \
     GCV_URL="http://localhost:8100" \
     TRIPAL_URL="https://legumeinfo.org" \
     DEBUG="false" \
-    HOST="gcv"
+    HOST="gcv" \
+    USE_GENE_UNAME="false"
 
 # Patch needed for external links to tripal_phylotree
 ADD PR131.diff /opt/
+ADD gene_uname.diff /opt/
 
 RUN mkdir -p /opt/gcv && \
     mkdir -p /etc/gcv && \
@@ -46,7 +48,8 @@ RUN mkdir -p /opt/gcv && \
     git checkout b195bf434fb9bc7f280c62c1dbd82642eca63448 && \
     patch -p1 < /opt/PR131.diff && \
     cd server && \
-    pip install -r requirements.txt
+    pip install -r requirements.txt && \
+    cp services/views.py /etc/gcv/original_views.py
 
 ADD config.json.template /etc/gcv/config.json.template
 ADD settings.py /opt/gcv/server/server/settings.py
