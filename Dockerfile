@@ -16,7 +16,8 @@ RUN set -x \
     && curl -fSL "https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini" -o /usr/local/bin/tini \
     && curl -fSL "https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini.asc" -o /usr/local/bin/tini.asc \
     && export GNUPGHOME="$(mktemp -d)" \
-    && gpg --keyserver pgp.mit.edu --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 \
+    && gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 \
+    || gpg --keyserver pgp.mit.edu --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 \
     && gpg --batch --verify /usr/local/bin/tini.asc /usr/local/bin/tini \
     && rm -r "$GNUPGHOME" /usr/local/bin/tini.asc \
     && chmod +x /usr/local/bin/tini
@@ -40,6 +41,8 @@ ENV SITE_NAME="lis" \
 # Patch needed for external links to tripal_phylotree
 ADD PR131.diff /opt/
 ADD gene_uname.diff /opt/
+ADD species_display.diff /opt/
+ADD chromosome_name_collision.diff /opt/
 
 RUN mkdir -p /opt/gcv && \
     mkdir -p /etc/gcv && \
@@ -47,6 +50,8 @@ RUN mkdir -p /opt/gcv && \
     git clone https://github.com/legumeinfo/lis_context_viewer.git . && \
     git checkout b195bf434fb9bc7f280c62c1dbd82642eca63448 && \
     patch -p1 < /opt/PR131.diff && \
+    patch -p1 < /opt/species_display.diff && \
+    patch -p1 < /opt/chromosome_name_collision.diff && \
     cd server && \
     pip install -r requirements.txt && \
     cp services/views.py /etc/gcv/original_views.py

@@ -1,0 +1,62 @@
+diff --git a/client/src/app/components/search/search.component.ts b/client/src/app/components/search/search.component.ts
+index 2475657..6e1d109 100644
+--- a/client/src/app/components/search/search.component.ts
++++ b/client/src/app/components/search/search.component.ts
+@@ -213,6 +213,7 @@ export class SearchComponent implements AfterViewInit, OnInit {
+       this._macroTracksService.getChromosome(
+         query.source,
+         query.chromosome_name,
++        query.species_id,
+         chromosome => {
+           this._macroTracksService.federatedSearch(
+             query.chromosome_name,
+diff --git a/client/src/app/constants/default-parameters.ts b/client/src/app/constants/default-parameters.ts
+index ac8e462..73b8cf7 100644
+--- a/client/src/app/constants/default-parameters.ts
++++ b/client/src/app/constants/default-parameters.ts
+@@ -10,7 +10,7 @@ export const enum DefaultQueryParams {
+   DEFAULT_NEIGHBORS    = 10,
+   DEFAULT_MATCHED      = 4,
+   DEFAULT_INTERMEDIATE = 5,
+-  DEFAULT_SOURCE       = 'lis'
++  DEFAULT_SOURCE       = 'bipaa'
+ }
+ 
+ // alignment parameters
+diff --git a/client/src/app/services/macro-tracks.service.ts b/client/src/app/services/macro-tracks.service.ts
+index 987ac64..df12328 100644
+--- a/client/src/app/services/macro-tracks.service.ts
++++ b/client/src/app/services/macro-tracks.service.ts
+@@ -43,6 +43,7 @@ export class MacroTracksService {
+   getChromosome(
+     source: string,
+     chromosome: string,
++    species_id: number,
+     success = e => {},
+     failure = e => {}
+   ): void {
+@@ -51,7 +52,7 @@ export class MacroTracksService {
+     if (idx != -1) {
+       let s: Server = AppConfig.SERVERS[idx];
+       if (s.hasOwnProperty('chromosome')) {
+-        let args = {chromosome: chromosome} as RequestOptionsArgs;
++        let args = {chromosome: chromosome, species_id: species_id} as RequestOptionsArgs;
+         let response: Observable<Response>;
+         if (s.chromosome.type === GET)
+           response = this._http.get(s.chromosome.url, args)
+diff --git a/server/services/views.py b/server/services/views.py
+index 895f92b..eb02804 100644
+--- a/server/services/views.py
++++ b/server/services/views.py
+@@ -888,9 +888,9 @@ def v1_1_chromosome(request):
+     # parse the POST data (Angular puts it in the request body)
+     POST = json.loads(request.body)
+     # make sure the request type is POST and that it contains a query (families)
+-    if request.method == 'POST' and 'chromosome' in POST:
++    if request.method == 'POST' and 'chromosome' in POST and 'species_id' in POST:
+         # get the query chromosome
+-        chromosome = get_object_or_404(Feature, name=POST['chromosome'])
++        chromosome = get_object_or_404(Feature, name=POST['chromosome'], organism_id=POST['species_id'])
+ 
+         # get all the genes on the query chromosomes
+         genes = list(GeneOrder.objects.only(
