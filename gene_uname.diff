@@ -1,13 +1,14 @@
 diff --git a/services/views.py b/services/views.py
 --- a/services/views.py
 +++ b/services/views.py
-@@ -302,7 +302,14 @@ def v1_gene_to_query_track(request):
+@@ -302,7 +302,15 @@ def v1_gene_to_query_track(request):
      # make sure the request type is POST and that it contains a focus gene name
      if request.method == 'POST' and 'gene' in POST and 'neighbors' in POST:
          # get the focus gene of the query track
 -        focus = get_object_or_404(Feature, name=POST['gene'])
++        sequence_cv = Cv.objects.only('pk').filter(name='sequence')
 +        gene_type = list(
-+            Cvterm.objects.only('pk').filter(name='gene')
++            Cvterm.objects.only('pk').filter(name='gene', cv_id=sequence_cv)
 +        )
 +        if len(gene_type) == 0:
 +            raise Http404
