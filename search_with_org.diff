@@ -17,7 +17,7 @@ index b77dc33..9acb1a6 100644
    },
 -  {path: 'search/:source/:gene', component: SearchComponent}
 +  {path: 'search/:source/:gene', component: SearchComponent},
-+  {path: 'search/:source/:species/:gene', component: SearchComponent}
++  {path: 'search/:source/:species_id/:gene', component: SearchComponent}
  ];
  
  @NgModule({
@@ -29,7 +29,7 @@ index b9af598..3e7192e 100644
  
    @Input() source: string;
    @Input() gene: string;
-+  @Input() species: string;
++  @Input() species_id: string;
    @Output() invalid = new EventEmitter();
    @Output() submitted = new EventEmitter();
  
@@ -37,7 +37,7 @@ index b9af598..3e7192e 100644
      this._microTracksService.geneSearch(
        this.source,
        this.gene,
-+      this.species,
++      this.species_id,
        this.queryGroup.getRawValue(),
        e => this._alerts.pushAlert(new Alert(Alerts.ALERT_DANGER, e))
      );
@@ -49,7 +49,7 @@ index 86e5ccc..da40a9b 100644
    <search-params
      [source]="routeSource"
      [gene]="routeGene"
-+    [species]="routeSpecies"
++    [species_id]="routeSpecies"
      (invalid)="selectParams()"
      (submitted)="invalidateMicro()" >
    </search-params>
@@ -69,7 +69,7 @@ index 2475657..6f96cc1 100644
      this.hideLocalGlobalPlots();
      this.routeSource = params['source'];
      this.routeGene = params['gene'];
-+    this.routeSpecies = params['species'];
++    this.routeSpecies = params['species_id'];
    }
  
    private _onSearchQuery([query, blockParams]): void {
@@ -77,7 +77,7 @@ index 2475657..6f96cc1 100644
        this._macroTracksService.getChromosome(
          query.source,
          query.chromosome_name,
-+        query.species,
++        query.species_id,
          chromosome => {
            this._macroTracksService.federatedSearch(
              query.chromosome_name,
@@ -100,7 +100,7 @@ index c926e66..dab8a92 100644
    geneSearch(
      source: string,
      queryGene: string,
-+    species: string,
++    species_id: string,
      params: QueryParams,
      failure = e => {}
    ): void {
@@ -110,7 +110,7 @@ index c926e66..dab8a92 100644
            gene: queryGene,
 -          neighbors: params.neighbors
 +          neighbors: params.neighbors,
-+          species: species
++          species_id: species_id
          } as RequestOptionsArgs;
          let response: Observable<Response>;
          if (s.microQuery.type === GET)
@@ -131,8 +131,8 @@ index 895f92b..f79fde9 100644
 +            raise Http404
 +        gene_type = gene_type[0]
 +
-+        if 'species' in POST and POST['species']:
-+            focus = get_object_or_404(Feature, uniquename=POST['gene'], organism_id=POST['species'], type=gene_type)
++        if 'species_id' in POST and POST['species_id']:
++            focus = get_object_or_404(Feature, uniquename=POST['gene'], organism_id=POST['species_id'], type=gene_type)
 +        else:
 +            focus = get_object_or_404(Feature, uniquename=POST['gene'], type=gene_type)
          focus_id = focus.pk
