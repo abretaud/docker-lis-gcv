@@ -1,0 +1,152 @@
+diff --git a/client/src/app/app-routing.module.ts b/client/src/app/app-routing.module.ts
+index b77dc33..9acb1a6 100644
+--- a/client/src/app/app-routing.module.ts
++++ b/client/src/app/app-routing.module.ts
+@@ -15,7 +15,7 @@ const routes: Routes = [
+   {path: '', redirectTo: '/instructions', pathMatch: 'full'},
+   {path: 'multi/:genes', component: MultiComponent},
+   {
+-    path: 'basic/:genes', 
++    path: 'basic/:genes',
+     redirectTo: 'multi/:genes',
+     pathMatch: 'full'
+   },
+@@ -25,7 +25,8 @@ const routes: Routes = [
+     redirectTo: '/search/' + DefaultQueryParams.DEFAULT_SOURCE + '/:gene',
+     pathMatch: 'full'
+   },
+-  {path: 'search/:source/:gene', component: SearchComponent}
++  {path: 'search/:source/:gene', component: SearchComponent},
++  {path: 'search_org/:source/:species/:gene/', component: SearchComponent}
+ ];
+ 
+ @NgModule({
+diff --git a/client/src/app/components/search/search-params.component.ts b/client/src/app/components/search/search-params.component.ts
+index b9af598..3e7192e 100644
+--- a/client/src/app/components/search/search-params.component.ts
++++ b/client/src/app/components/search/search-params.component.ts
+@@ -39,6 +39,7 @@ export class SearchParamsComponent implements OnChanges, OnDestroy, OnInit {
+ 
+   @Input() source: string;
+   @Input() gene: string;
++  @Input() species: string;
+   @Output() invalid = new EventEmitter();
+   @Output() submitted = new EventEmitter();
+ 
+@@ -130,6 +131,7 @@ export class SearchParamsComponent implements OnChanges, OnDestroy, OnInit {
+     this._microTracksService.geneSearch(
+       this.source,
+       this.gene,
++      this.species,
+       this.queryGroup.getRawValue(),
+       e => this._alerts.pushAlert(new Alert(Alerts.ALERT_DANGER, e))
+     );
+diff --git a/client/src/app/components/search/search.component.html b/client/src/app/components/search/search.component.html
+index 86e5ccc..da40a9b 100644
+--- a/client/src/app/components/search/search.component.html
++++ b/client/src/app/components/search/search.component.html
+@@ -170,6 +170,7 @@
+   <search-params
+     [source]="routeSource"
+     [gene]="routeGene"
++    [species]="routeSpecies"
+     (invalid)="selectParams()"
+     (submitted)="invalidateMicro()" >
+   </search-params>
+diff --git a/client/src/app/components/search/search.component.ts b/client/src/app/components/search/search.component.ts
+index 2475657..6f96cc1 100644
+--- a/client/src/app/components/search/search.component.ts
++++ b/client/src/app/components/search/search.component.ts
+@@ -146,6 +146,7 @@ export class SearchComponent implements AfterViewInit, OnInit {
+ 
+   routeSource: string;
+   routeGene: string;
++  routeSpecies: string;
+ 
+   private _alignedTracks: Observable<MicroTracks>;
+   private _microTracks: Observable<MicroTracks>;
+@@ -203,6 +204,7 @@ export class SearchComponent implements AfterViewInit, OnInit {
+     this.hideLocalGlobalPlots();
+     this.routeSource = params['source'];
+     this.routeGene = params['gene'];
++    this.routeSpecies = params['species'];
+   }
+ 
+   private _onSearchQuery([query, blockParams]): void {
+@@ -213,6 +215,7 @@ export class SearchComponent implements AfterViewInit, OnInit {
+       this._macroTracksService.getChromosome(
+         query.source,
+         query.chromosome_name,
++        query.species,
+         chromosome => {
+           this._macroTracksService.federatedSearch(
+             query.chromosome_name,
+diff --git a/client/src/app/services/micro-tracks.service.ts b/client/src/app/services/micro-tracks.service.ts
+index c926e66..dab8a92 100644
+--- a/client/src/app/services/micro-tracks.service.ts
++++ b/client/src/app/services/micro-tracks.service.ts
+@@ -89,8 +89,8 @@ export class MicroTracksService {
+           let maxs  = bin[i].genes.map(g => Math.max(g.fmin, g.fmax));
+           let begin = Math.min.apply(null, mins);
+           let end   = Math.max.apply(null, maxs);
+-          breaks.push({v: begin, c: 1, i: i}); 
+-          breaks.push({v: end, c: -1, i: i}); 
++          breaks.push({v: begin, c: 1, i: i});
++          breaks.push({v: end, c: -1, i: i});
+         }
+         breaks.sort((a, b) => {
+           if (a.v < b.v || a.v > b.v) return a.v - b.v;
+@@ -215,6 +215,7 @@ export class MicroTracksService {
+   geneSearch(
+     source: string,
+     queryGene: string,
++    species: string,
+     params: QueryParams,
+     failure = e => {}
+   ): void {
+@@ -225,7 +226,8 @@ export class MicroTracksService {
+       if (s.hasOwnProperty('microQuery')) {
+         let args = {
+           gene: queryGene,
+-          neighbors: params.neighbors
++          neighbors: params.neighbors,
++          species: species
+         } as RequestOptionsArgs;
+         let response: Observable<Response>;
+         if (s.microQuery.type === GET)
+diff --git a/server/services/views.py b/server/services/views.py
+index 895f92b..f79fde9 100644
+--- a/server/services/views.py
++++ b/server/services/views.py
+@@ -302,7 +302,18 @@ def v1_gene_to_query_track(request):
+     # make sure the request type is POST and that it contains a focus gene name
+     if request.method == 'POST' and 'gene' in POST and 'neighbors' in POST:
+         # get the focus gene of the query track
+-        focus = get_object_or_404(Feature, name=POST['gene'])
++        sequence_cv = Cv.objects.only('pk').filter(name='sequence')
++        gene_type = list(
++            Cvterm.objects.only('pk').filter(name='gene', cv_id=sequence_cv)
++        )
++        if len(gene_type) == 0:
++            raise Http404
++        gene_type = gene_type[0]
++
++        if 'species' in POST and POST['species']:
++            focus = get_object_or_404(Feature, uniquename=POST['gene'], organism_id=POST['species'], type=gene_type)
++        else:
++            focus = get_object_or_404(Feature, uniquename=POST['gene'], type=gene_type)
+         focus_id = focus.pk
+         focus_order = list(GeneOrder.objects.filter(gene=focus))
+         if len(focus_order) == 0:
+@@ -888,9 +899,9 @@ def v1_1_chromosome(request):
+     # parse the POST data (Angular puts it in the request body)
+     POST = json.loads(request.body)
+     # make sure the request type is POST and that it contains a query (families)
+-    if request.method == 'POST' and 'chromosome' in POST:
++    if request.method == 'POST' and 'chromosome' in POST and 'species_id' in POST:
+         # get the query chromosome
+-        chromosome = get_object_or_404(Feature, name=POST['chromosome'])
++        chromosome = get_object_or_404(Feature, name=POST['chromosome'], organism_id=POST['species_id'])
+ 
+         # get all the genes on the query chromosomes
+         genes = list(GeneOrder.objects.only(

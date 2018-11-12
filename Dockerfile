@@ -40,7 +40,7 @@ ENV SITE_NAME="lis" \
 
 # Patch needed for external links to tripal_phylotree
 ADD PR131.diff /opt/
-ADD gene_uname.diff /opt/
+ADD search_with_org.diff /opt/
 ADD species_display.diff /opt/
 ADD chromosome_name_collision.diff /opt/
 
@@ -50,6 +50,7 @@ RUN mkdir -p /opt/gcv && \
     git clone https://github.com/legumeinfo/lis_context_viewer.git . && \
     git checkout b195bf434fb9bc7f280c62c1dbd82642eca63448 && \
     patch -p1 < /opt/PR131.diff && \
+    patch -p1 < /opt/search_with_org.diff && \
     patch -p1 < /opt/species_display.diff && \
     patch -p1 < /opt/chromosome_name_collision.diff && \
     cd server && \
