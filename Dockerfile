@@ -35,8 +35,7 @@ ENV SITE_NAME="lis" \
     GCV_URL="http://localhost:8100" \
     TRIPAL_URL="https://legumeinfo.org" \
     DEBUG="false" \
-    HOST="gcv" \
-    USE_GENE_UNAME="false"
+    HOST="gcv"
 
 # Patch needed for external links to tripal_phylotree
 ADD PR131.diff /opt/

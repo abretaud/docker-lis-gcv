@@ -34,7 +34,6 @@ The following environment variables are available:
 |TRIPAL_URL|Address of a Tripal instance installed with tripal_phylotree module and a tripal_linkout module|https://legumeinfo.org|
 |DEBUG|Set to 'true' to activate the debug mode|false|
 |HOST|Hostname|gcv|
-|USE_GENE_UNAME|Set to 'true' if you prefer GCV to look for genes using their uniquename|false|
 
 ## Contributing
 
