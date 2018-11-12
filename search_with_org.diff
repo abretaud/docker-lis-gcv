@@ -17,7 +17,7 @@ index b77dc33..9acb1a6 100644
    },
 -  {path: 'search/:source/:gene', component: SearchComponent}
 +  {path: 'search/:source/:gene', component: SearchComponent},
-+  {path: 'search_org/:source/:species/:gene/', component: SearchComponent}
++  {path: 'search_org/:source/:species/:gene', component: SearchComponent}
  ];
  
  @NgModule({
