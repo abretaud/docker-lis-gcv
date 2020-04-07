@@ -42,6 +42,7 @@ ENV SITE_NAME="lis" \
 
 # Patch needed for external links to tripal_phylotree
 ADD PR131.diff /opt/
+ADD js_fix.diff /opt/
 ADD search_with_org.diff /opt/
 ADD species_display.diff /opt/
 ADD chromosome_name_collision.diff /opt/
@@ -55,6 +56,7 @@ RUN mkdir -p /opt/gcv && \
     patch -p1 < /opt/search_with_org.diff && \
     patch -p1 < /opt/species_display.diff && \
     patch -p1 < /opt/chromosome_name_collision.diff && \
+    patch -p1 < /opt/js_fix.diff && \
     cd server && \
     pip install -r requirements.txt && \
     cp services/views.py /etc/gcv/original_views.py
