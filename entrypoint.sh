@@ -4,7 +4,7 @@ set -e
 ### auto-configure database from environment-variables
 
 DB_DRIVER=pgsql
-DB_HOST=postgres
+: ${DB_HOST:='postgres'}
 : ${DB_PORT:='5432'}
 : ${DB_NAME:='postgres'}
 : ${DB_USER:='postgres'}
