@@ -1,5 +1,5 @@
 FROM nginx
-MAINTAINER Anthony Bretaudeau <anthony.bretaudeau@inra.fr>
+MAINTAINER Anthony Bretaudeau <anthony.bretaudeau@inrae.fr>
 ENV DEBIAN_FRONTEND noninteractive
 
 EXPOSE 8000
@@ -8,7 +8,7 @@ RUN mkdir -p /usr/share/man/man1 /usr/share/man/man7
 
 RUN apt-get -qq update --fix-missing && \
     apt-get --no-install-recommends -y install \
-    python curl wget patch git nano postgresql-client ca-certificates gpg dirmngr \
+    python curl wget patch git nano postgresql-client ca-certificates gpg gpg-agent dirmngr \
     python-pip python-setuptools python-dev libpq-dev
 
 ENV TINI_VERSION v0.16.1
