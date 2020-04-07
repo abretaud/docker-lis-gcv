@@ -25,7 +25,7 @@ RUN set -x \
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
     apt-get -qq update --fix-missing && \
     apt-get --no-install-recommends -y install \
-    nodejs build-essential libssl-dev
+    nodejs npm build-essential libssl-dev
 
 ENTRYPOINT ["/usr/local/bin/tini", "--"]
 
