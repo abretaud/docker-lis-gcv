@@ -23,6 +23,9 @@ RUN set -x \
     && chmod +x /usr/local/bin/tini
 
 RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - && \
+    echo "Package: *" > /etc/apt/preferences.d/nodesource && \
+    echo "Pin: origin deb.nodesource.com" >> /etc/apt/preferences.d/nodesource && \
+    echo "Pin-Priority: 600" >> /etc/apt/preferences.d/nodesource && \
     apt-get -qq update --fix-missing && \
     apt-get --no-install-recommends -y install \
     nodejs build-essential libssl-dev
