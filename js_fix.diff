@@ -5,8 +5,8 @@ diff -Naur ../lis_context_viewer/client/src/app/components/multi/multi.component
           ViewChild,
           ViewEncapsulation }      from '@angular/core';
  import { Observable }             from 'rxjs/Observable';
--import Split                 from 'split.js';
-+import * as Split                 from 'split.js';
+-import * as Split                 from 'split.js';
++import Split                 from 'split.js';
  import * as d3                    from 'd3';
  import { GCV }                    from '../../../assets/js/gcv';
  
@@ -17,8 +17,8 @@ diff -Naur ../lis_context_viewer/client/src/app/components/search/search.compone
           ViewChildren,
           ViewEncapsulation }      from '@angular/core';
  import { Observable }             from 'rxjs/Observable';
--import Split                 from 'split.js';
-+import * as Split                 from 'split.js';
+-import * as Split                 from 'split.js';
++import Split                 from 'split.js';
  import * as d3                    from 'd3';
  import { GCV }                    from '../../../assets/js/gcv';
  
