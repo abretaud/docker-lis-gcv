@@ -51,7 +51,7 @@ else:
     ALLOWED_HOSTS = [socket.gethostname(), 'legumeinfo.org', 'gcv', 'localhost']
 
 if os.environ['HOST']:
-    ALLOWED_HOSTS += os.environ['HOST']
+    ALLOWED_HOSTS.append(os.environ['HOST'])
 
 # Application definition
 
